@@ -1,4 +1,3 @@
-import { text } from 'express';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

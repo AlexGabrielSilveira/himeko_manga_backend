@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { AppDataSource } from '../data-source'
-import { User } from '../entities/User'
+import { User } from '../entities/Users'
 import jwt from 'jsonwebtoken'
 
 export class UserService {

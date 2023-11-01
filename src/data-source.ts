@@ -1,6 +1,11 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm";
-import { User } from './entities/User';
+import { Chapter } from './entities/Chapters';
+import { Manga } from './entities/Mangas';
+import { Page } from './entities/Pages';
+import { Scanlator } from './entities/Scanlators';
+import { User } from './entities/Users';
+
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -11,7 +16,7 @@ export const AppDataSource = new DataSource({
     database: "himeko",
     synchronize: true,
     logging: false,
-    entities: [User],
+    entities: [User, Scanlator,Page, Manga, Chapter]
 })
 
 AppDataSource.initialize()

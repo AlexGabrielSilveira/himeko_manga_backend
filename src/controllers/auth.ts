@@ -1,6 +1,6 @@
 import express, { Response, Request } from 'express'
 const router = express.Router()
-import { User } from '../entities/User'
+import { User } from '../entities/Users'
 import bcrypt from 'bcrypt'
 import { AppDataSource } from '../data-source'
 import { UserService } from '../services/loginService'
