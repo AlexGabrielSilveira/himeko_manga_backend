@@ -1,13 +1,14 @@
-const express = require('express')
+import express, { Response, Request } from 'express'
 const router = express.Router()
-const User = require('../models/User')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+import { User } from '../entities/User'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import { AppDataSource } from '../data-source'
 
 
-router.post("/login", async(req, res) => {
+router.post("/login", async(req: Request, res: Response) => {
     const {email, password} = req.body
-
+    
     const credentialsCheck = {
         password: password == null || password == undefined || !password,
         email: email == null || email == undefined || !email,
@@ -16,7 +17,8 @@ router.post("/login", async(req, res) => {
     if(credentialsCheck.password || credentialsCheck.email) {
         return res.status(422).json({msg: "Suas credencias não foram enviadas corretamente, verifique!"})
     }
-    const user = await User.findOne({where: {email: email} })
+    const userRepository = AppDataSource.getRepository(User)
+    const user = await  userRepository.findOneBy({email})
     if(!user) {
         return res.status(404).json({ msg: "Usuário não encontrado!"})
     }
@@ -29,8 +31,12 @@ router.post("/login", async(req, res) => {
     try {
         const secret = process.env.SECRET
 
+        if(secret == undefined) {
+            throw new Error('Cannot assign jwt token if a undefined secret')
+        }
+
         const token = jwt.sign({
-            id:user._id
+            id:user.id
         }, secret)
 
         res.status(200).json({msg: "Usuário autenticado!", token})
@@ -51,7 +57,9 @@ router.post("/register", async(req, res) => {
     if(credentialsCheck.username || credentialsCheck.password || credentialsCheck.email) {
         return res.status(422).json({msg: "Suas credencias não foram enviadas corretamente, verifique!"})
     }
-    const userExists = await User.findOne({where: {email: email} })
+    const userRepository = AppDataSource.getRepository(User)
+    const userExists = await userRepository.findOneBy({ email })
+
     if(userExists) {
         return res.status(422).json({ msg: "esse e-mail já está cadastrado em nosso banco de dados!"})
     }
@@ -59,10 +67,14 @@ router.post("/register", async(req, res) => {
     const salt = await bcrypt.genSalt(12)
     const hashPassword = await bcrypt.hash(password, salt)
 
-    User.create({ username, email, password: hashPassword, roles: "user"})
+    const user = new User()
+    user.name = username
+    user.email = email
+    user.password = hashPassword
+
+    await userRepository.save(user)
 
     res.status(200).json({msg: "Registrado com sucesso!"})
 })
 
-
-module.exports = router
+export default router
