@@ -3,7 +3,8 @@ const router = express.Router()
 import { User } from '../entities/User'
 import bcrypt from 'bcrypt'
 import { AppDataSource } from '../data-source'
-import { UserService } from '../services/userService'
+import { UserService } from '../services/loginService'
+import { RegisterService } from '../services/registerService'
 
 
 router.post("/login", async(req: Request, res: Response) => {
@@ -50,22 +51,24 @@ router.post("/register", async(req, res) => {
     if(credentialsCheck.username || credentialsCheck.password || credentialsCheck.email) {
         return res.status(422).json({msg: "Suas credencias não foram enviadas corretamente, verifique!"})
     }
+    const registerService = new RegisterService()
     const userRepository = AppDataSource.getRepository(User)
-    const userExists = await userRepository.findOneBy({ email })
 
-    if(userExists) {
-        return res.status(422).json({ msg: "esse e-mail já está cadastrado em nosso banco de dados!"})
-    }
-
-    const salt = await bcrypt.genSalt(12)
-    const hashPassword = await bcrypt.hash(password, salt)
-
-    const user = new User()
-    user.name = username
-    user.email = email
-    user.password = hashPassword
-
+    try {
+        const hashPassword = await registerService.register(email, password)
+        
+        const user = new User()
+        user.name = username
+        user.email = email
+        user.password = hashPassword
     await userRepository.save(user)
+    } catch (error) {
+        if(error instanceof Error) {
+            if(error.message === "Este e-mail ja está sendo usado!") {
+                return res.status(422).json({ msg: "esse e-mail já está cadastrado em nosso banco de dados!"})
+            }
+        }
+    }
 
     res.status(200).json({msg: "Registrado com sucesso!"})
 })
