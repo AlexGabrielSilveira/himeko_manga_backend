@@ -2,8 +2,8 @@ import express, { Response, Request } from 'express'
 const router = express.Router()
 import { User } from '../entities/User'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import { AppDataSource } from '../data-source'
+import { UserService } from '../services/userService'
 
 
 router.post("/login", async(req: Request, res: Response) => {
@@ -22,28 +22,21 @@ router.post("/login", async(req: Request, res: Response) => {
     if(!user) {
         return res.status(404).json({ msg: "Usuário não encontrado!"})
     }
-
-    const decodePassword = await bcrypt.compare(password, user.password)
-    if(!decodePassword) {
-        return res.status(422).json({ msg: "Senha incorreta!"})
-    }
-
+    const userService = new UserService()
     try {
-        const secret = process.env.SECRET
-
-        if(secret == undefined) {
-            throw new Error('Cannot assign jwt token if a undefined secret')
+        const token = await userService.login(email, password)
+        return res.status(200).json({msg: "Autenticado com sucesso!", token})
+    } catch (error) {
+        if(error instanceof Error)  {
+            if(error.message === 'User not found!') {
+                return res.status(404).json({msg: "User not found!"})
+            }
+            if(error.message === "Passwords doesn't matches!") {
+                return res.status(404).json({msg: "Confira suas credenciais!"})
+            }
         }
-
-        const token = jwt.sign({
-            id:user.id
-        }, secret)
-
-        res.status(200).json({msg: "Usuário autenticado!", token})
-    }catch(err) {
-        console.log(err)
+        return res.status(500).json({ msg: "deu ruim!"})
     }
-
 })
 router.post("/register", async(req, res) => {
     const { username, password, email} = req.body
