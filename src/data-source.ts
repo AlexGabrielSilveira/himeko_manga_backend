@@ -21,6 +21,6 @@ export const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
     .then(() => {
-        console.log('database has been connected!')
+        console.log('banco de dados on e roteando papai!')
     })
 .catch((error) => console.log(error))

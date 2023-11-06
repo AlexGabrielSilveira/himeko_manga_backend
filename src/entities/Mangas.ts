@@ -9,7 +9,7 @@ export class Manga {
     @Column()
     name: string
 
-    @Column()
+    @Column({ type: "text"})
     cape_url: string
 
     @Column()
