@@ -1,5 +1,4 @@
 import { Response, Request } from 'express'
-import { AppDataSource } from '../data-source'
 import { z } from  'zod'
 import { ScanlatorService } from '../services/scanlatorService'
 
@@ -18,9 +17,14 @@ export class AdminController {
             return res.status(400).json({formatted})
         }
         const scanlatorService = new ScanlatorService()
+
+        let logoUrl
+        if(req.file) {
+            logoUrl = `${process.env.BASE_URL}/uploads/${req.file.filename}`
+        }
     
         try {
-            scanlatorService.create(name, url)
+            await scanlatorService.create(name, url, logoUrl)
         } catch (error) {
             console.log(error)
         }

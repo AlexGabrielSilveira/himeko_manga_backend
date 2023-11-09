@@ -12,5 +12,5 @@ export class Scanlator {
     url: string
 
     @Column({ default: "https://pbs.twimg.com/profile_images/1687471964/neoxlogomini_400x400.png"})
-    logo: string
+    logo?: string
 }
