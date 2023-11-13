@@ -55,7 +55,7 @@ export class AuthController {
         const userService =  new UserService()
         
         try {
-            userService.register(username, email, password)
+            await userService.register(username, email, password)
         } catch (error) {
             if(error instanceof Error) {
                 if(error.message === "Este e-mail ja está sendo usado!") {

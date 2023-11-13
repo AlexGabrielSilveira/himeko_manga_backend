@@ -16,6 +16,7 @@ adminScanlatorRouter.post("/", upload.single('logo'), admin.createScanlator)
 router.use("/auth/login", auth.login)
 router.use("/auth/register", auth.register)
 router.use("/admin/scanlator", adminScanlatorRouter)
+router.use("/admin/manga", admin.createManga)
 router.use("/scanlator", scanlator.getAllScans)
 
 
