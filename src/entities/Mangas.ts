@@ -6,17 +6,17 @@ export class Manga {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ unique: true })
     name: string
 
-    @Column({ type: "text"})
+    @Column({ default: "a"})
     cape_url: string
 
     @Column()
     description: string
 
     @Column()
-    note: number
+    note: string
 
     @Column()
     tags: string

@@ -51,7 +51,8 @@ export class AdminController {
         const mangaService = new MangaService()
 
         try {
-            await mangaService.create(name, tags, note, description)
+            const capeUrl = await mangaService.saveCapeImage(img, name)
+            await mangaService.create(name, note, tags, description, capeUrl)
         }catch(err) {
             console.log(err)
         }
