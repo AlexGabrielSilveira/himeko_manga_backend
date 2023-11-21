@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from "node:path"
 
 export class MangaService {
-    public async create(name: string, note: string, tags: string, description: string, img: string) {
+    public async create(name: string, note: string, tags: string, description: string, img: string, mal_id: number) {
         const mangaRespository = AppDataSource.getRepository(Manga)
 
         const manga = new Manga()
@@ -13,7 +13,8 @@ export class MangaService {
         manga.tags = tags
         manga.note = note
         manga.description = description
-        manga.cape_url = img
+        manga.cape_url = img,
+        manga.mal_id = mal_id
 
         await mangaRespository.save(manga)
     }

@@ -21,6 +21,9 @@ export class Manga {
     @Column()
     tags: string
 
+    @Column()
+    mal_id: number
+
     @OneToOne(() => Manga)
     @JoinColumn()
     scanlator: number

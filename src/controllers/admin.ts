@@ -32,17 +32,18 @@ export class AdminController {
         res.status(200).json({ msg: "scanlator criada!"})
     }
     async createManga(req: Request, res: Response) {
-        const{name, tags, note, description, img} = req.body
+        const{name, tags, note, description, img, mal_id} = req.body
 
         const mangaSchema = z.object({
             name: z.string().trim().min(3), 
             tags: z.string().trim(), 
             note: z.string().trim(), 
             description: z.string(), 
-            img: z.string().trim()
+            img: z.string().trim(),
+            mal_id: z.number()
         })
 
-        const mangaParsed = mangaSchema.safeParse({name, tags, note, description, img})
+        const mangaParsed = mangaSchema.safeParse({name, tags, note, description, img, mal_id})
 
         if(!mangaParsed.success) {
             const formatted = mangaParsed.error.format()
@@ -52,7 +53,7 @@ export class AdminController {
 
         try {
             const capeUrl = await mangaService.saveCapeImage(img, name)
-            await mangaService.create(name, note, tags, description, capeUrl)
+            await mangaService.create(name, note, tags, description, capeUrl, mal_id)
         }catch(err) {
             console.log(err)
         }
