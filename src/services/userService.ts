@@ -2,45 +2,96 @@ import bcrypt from 'bcrypt'
 import { AppDataSource } from '../data-source'
 import { User } from '../entities/Users'
 import jwt from 'jsonwebtoken'
+import axios from 'axios'
+import qs from 'qs'
 
+interface GoogleTokenResult {
+    access_token: string,
+    expires_in: number,
+    refresh_token: string,
+    scope: string,
+    id_token: string
+}
+interface CreateProps {
+    name: string,
+    email: string,
+    picture: string,
+    oauthClient: string
+}
+interface GoogleTokenDecoded {
+    name: string,
+    email: string,
+    picture: string,
+}
 export class UserService {
-    public async login(email: string, password: string) {
+    public async create({
+        name,
+        email,
+        picture,
+        oauthClient
+    }: CreateProps) {
         const userRepository = AppDataSource.getRepository(User)
-        const user = await  userRepository.findOneBy({email})
-        if(!user) {
-            throw new Error('User not found!')
+        const user = new User()
+        user.name = name
+        user.email = email
+        user.oauthClient = oauthClient
+        user.picture = picture
+        
+        await userRepository.save(user)
+        return user
+    }
+    public async loginWithGoogle({ code }: {code:string}): Promise<User> {
+        const url = "https://oauth2.googleapis.com/token"
+        const values = {
+            code,
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            redirect_uri: process.env.REDIRECT_URL,
+            grant_type: 'authorization_code'
         }
-        const decodePassword = await bcrypt.compare(password, user.password)
-        if(!decodePassword) {
-            throw new Error("Passwords doesn't matches!");
+        try {
+            const res = await axios.post<GoogleTokenResult>(url, qs.stringify(values), {
+                headers: {
+                    "Content-Type": 'application/x-www-form-urlencoded'
+                }
+            })
+            const userData = jwt.decode(res.data.id_token) as GoogleTokenDecoded
+            
+            return await this.findOrCreate({
+                name: userData.name,
+                email: userData.email,
+                picture: userData.picture,
+                oauthClient: "google"
+            })
+        }catch(err: any) {
+            console.log('failed to fetch google token')
+            throw new Error(err.message)
+        }
+    }
+    public async findOrCreate({
+        name,
+        email,
+        picture,
+        oauthClient
+    }: CreateProps) {
+        const userRepository = AppDataSource.getRepository(User)
+        const userExists = await userRepository.findOneBy({ email, oauthClient })
+    
+        if(userExists) {
+            return userExists
         }
 
+        return await this.create({name, email, picture, oauthClient})
+    }
+    public generateUserToken(email: string, userId: number) {
         if(process.env.SECRET == undefined) {
             throw new Error('Cannot assign jwt token if a undefined secret')
         }
         const token = jwt.sign({
-            id:user.id
-        }, process.env.SECRET)
+            email
+        }, process.env.SECRET, {
+            subject: userId.toString()
+        })
         return token
-    }
-    
-    public async register(username: string,email: string, password: string) {
-        const userRepository = AppDataSource.getRepository(User)
-        const userExists = await userRepository.findOneBy({ email })
-    
-        if(userExists) {
-            throw new Error("Este e-mail ja está sendo usado!");
-        }
-    
-        const salt = await bcrypt.genSalt(12)
-        const hashPassword = await bcrypt.hash(password, salt)
-        
-        const user = new User()
-        user.name = username
-        user.email = email
-        user.password = hashPassword
-        
-        await userRepository.save(user)
-        
     }
 }

@@ -10,12 +10,14 @@ export class User {
     })
     name: string;
 
+    @Column()
+    oauthClient: string;
+
+    @Column()
+    picture?: string
 
     @Column()
     email: string;
-
-    @Column()
-    password: string;
 
     @Column({ default: "user"})
     role: string

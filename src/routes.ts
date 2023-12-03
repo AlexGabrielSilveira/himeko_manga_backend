@@ -11,16 +11,22 @@ const auth = new AuthController()
 const scanlator = new ScanlatorController()
 const manga = new MangaController()
 
-const adminScanlatorRouter = Router()
+const adminRouter = Router()
+const scanlatorRouter = Router()
+const mangaRouter = Router()
+const authRouter = Router()
 
-adminScanlatorRouter.post("/", upload.single('logo'), admin.createScanlator)
+adminRouter.post("/scanlator", upload.single('logo'), admin.createScanlator)
+adminRouter.post("/manga", admin.createManga)
+authRouter.post("/google/callback", auth.googleOAuth)
+scanlatorRouter.get("/", scanlator.getAllScans)
+mangaRouter.get("/", manga.getAllMangas)
 
-router.use("/auth/login", auth.login)
-router.use("/auth/register", auth.register)
-router.use("/admin/scanlator", adminScanlatorRouter)
-router.use("/admin/manga", admin.createManga)
-router.use("/scanlator", scanlator.getAllScans)
-router.use("/manga", manga.getAllMangas)
+
+router.use("/admin", adminRouter)
+router.use("/scanlator", scanlatorRouter)
+router.use("/manga", mangaRouter)
+router.use("/auth", authRouter)
 
 
 export default router
