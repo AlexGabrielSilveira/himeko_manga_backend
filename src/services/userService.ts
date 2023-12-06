@@ -87,11 +87,19 @@ export class UserService {
         if(process.env.SECRET == undefined) {
             throw new Error('Cannot assign jwt token if a undefined secret')
         }
-        const token = jwt.sign({
-            email
-        }, process.env.SECRET, {
+        const token = jwt.sign({ email }, process.env.SECRET, {
+            expiresIn: 300,
             subject: userId.toString()
         })
         return token
+    }
+    public validateToken(token: string) {
+        return jwt.verify(token, process.env.SECRET as string)
+    }
+    public async findById(id: number) {
+        const userRepository = AppDataSource.getRepository(User)
+        const user = await userRepository.findOneBy({ id })
+
+        return user
     }
 }

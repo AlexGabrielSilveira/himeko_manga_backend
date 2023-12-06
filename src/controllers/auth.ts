@@ -1,8 +1,5 @@
 import { Response, Request } from 'express'
-import { User } from '../entities/Users'
-import { AppDataSource } from '../data-source'
 import { UserService } from '../services/userService'
-import { z } from 'zod'
 
 export class AuthController {
     async googleOAuth(req: Request, res: Response) {
@@ -18,5 +15,13 @@ export class AuthController {
             return res.status(500).json({msg: "deu ruim"!})
         }
 
+    }
+    async me(req: Request, res: Response) {
+        const user = req.user
+        if(user == null) {
+            return res.status(401)
+        }
+
+        res.send(user)
     }
 } 
