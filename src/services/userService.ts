@@ -94,7 +94,11 @@ export class UserService {
         return token
     }
     public validateToken(token: string) {
-        return jwt.verify(token, process.env.SECRET as string)
+        try{
+            return jwt.verify(token, process.env.SECRET as string)
+        }catch(err) {
+            return false
+        }
     }
     public async findById(id: number) {
         const userRepository = AppDataSource.getRepository(User)
