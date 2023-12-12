@@ -5,12 +5,13 @@ import fs from 'fs'
 import path from "node:path"
 
 export class MangaService {
-    public async create(name: string, note: string, tags: string, description: string, img: string, mal_id: number) {
+    public async create(name: string, note: string, tags: string, description: string, img: string, mal_id: number, author: string) {
         const mangaRespository = AppDataSource.getRepository(Manga)
 
         const manga = new Manga()
         manga.name = name
         manga.tags = tags
+        manga.authors = author
         manga.note = note
         manga.description = description
         manga.cape_url = img,

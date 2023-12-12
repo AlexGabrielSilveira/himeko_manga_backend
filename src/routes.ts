@@ -23,6 +23,8 @@ authRouter.post("/google/callback", auth.googleOAuth)
 authRouter.get("/me", authMiddleware ,auth.me)
 scanlatorRouter.get("/", scanlator.getAllScans)
 mangaRouter.get("/", manga.getAllMangas)
+mangaRouter.get("/:mal_id", manga.getMangaByMalId)
+mangaRouter.get("/:name", manga.getMangaByName)
 
 
 router.use("/admin", adminRouter)

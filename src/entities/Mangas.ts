@@ -22,6 +22,9 @@ export class Manga {
     tags: string
 
     @Column()
+    authors: string
+
+    @Column()
     mal_id: number
 
     @OneToOne(() => Manga)
