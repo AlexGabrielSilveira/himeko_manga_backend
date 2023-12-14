@@ -19,7 +19,7 @@ export class AuthController {
     async me(req: Request, res: Response) {
         const user = (req as any).user
         if(user == null) {
-            return res.sendStatus(401)
+            return res.sendStatus(401).json({msg: "usuario não logado!"})
         }
 
         res.send(user)

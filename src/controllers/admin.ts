@@ -43,8 +43,7 @@ export class AdminController {
             img: z.string().trim(),
             mal_id: z.number()
         })
-
-        const mangaParsed = mangaSchema.safeParse({name, tags, note, description, img, mal_id})
+        const mangaParsed = mangaSchema.safeParse({name, tags, note, description, img, mal_id ,authors})
 
         if(!mangaParsed.success) {
             const formatted = mangaParsed.error.format()
