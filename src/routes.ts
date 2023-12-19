@@ -5,6 +5,7 @@ import { ScanlatorController } from './controllers/scanlator'
 import { upload } from './configs/multer'
 import { MangaController } from './controllers/manga'
 import { Auth as authMiddleware } from './middlewares/auth'
+import { hasRole } from './middlewares/hasRole'
 const router = Router()
 
 const admin = new AdminController()
@@ -17,6 +18,7 @@ const scanlatorRouter = Router()
 const mangaRouter = Router()
 const authRouter = Router()
 
+adminRouter.use(hasRole('admin'))
 adminRouter.post("/scanlator", upload.single('logo'), admin.createScanlator)
 adminRouter.post("/manga", admin.createManga)
 
@@ -27,13 +29,12 @@ scanlatorRouter.get("/", scanlator.getAllScans)
 
 mangaRouter.get("/", manga.getAllMangas)
 mangaRouter.get("/:mal_id", manga.getMangaByMalId)
-mangaRouter.get("/:name", manga.getMangaByName)
+mangaRouter.get("/search/:name", manga.getMangaByName)
 
 
-router.use("/admin", adminRouter)
+router.use("/admin",authMiddleware, adminRouter)
 router.use("/scanlator", scanlatorRouter)
 router.use("/manga", mangaRouter)
 router.use("/auth", authRouter)
-
 
 export default router

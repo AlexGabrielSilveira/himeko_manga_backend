@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
 import { Chapter } from "./Chapters"
+import { Scanlator } from "./Scanlators"
 
 @Entity()
 export class Manga {  
@@ -29,7 +30,7 @@ export class Manga {
 
     @OneToOne(() => Manga)
     @JoinColumn()
-    scanlator: number
+    scanlator: Scanlator
 
     @OneToMany(() => Chapter, (chapter) => chapter.manga)
     chapters: Chapter[]

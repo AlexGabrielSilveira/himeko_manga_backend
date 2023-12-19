@@ -14,7 +14,6 @@ export class AuthController {
         }catch(err) {
             return res.status(500).json({msg: "deu ruim"!})
         }
-
     }
     async me(req: Request, res: Response) {
         const user = (req as any).user

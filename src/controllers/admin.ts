@@ -32,7 +32,7 @@ export class AdminController {
         res.status(200).json({ msg: "scanlator criada!"})
     }
     async createManga(req: Request, res: Response) {
-        const{name, tags, note, description, img, mal_id, authors} = req.body
+        const{name, tags, note, description, img,  mal_id, authors} = req.body
 
         const mangaSchema = z.object({
             name: z.string().trim().min(3), 

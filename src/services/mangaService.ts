@@ -20,15 +20,18 @@ export class MangaService {
         await mangaRespository.save(manga)
     }
     public async saveCapeImage(url: string, name: string) {
+        let nameReplace =  name.replace(/[^\w\s]/gi, '')
+        console.log(name + '/' + nameReplace)
+
         const image = await fetch(url)
-        const mangaFilesPath = path.join(__dirname, "..", "..", `/uploads/mangas/${name}/`)
+        const mangaFilesPath = path.join(__dirname, "..", "..", `/uploads/mangas/${nameReplace}/`)
         const imagePath = path.join(mangaFilesPath, "cape.jpg")  
 
         if(!fs.existsSync(mangaFilesPath)) {
             await fsPromises.mkdir(mangaFilesPath)
         }
         await fsPromises.writeFile(imagePath, Buffer.from(await image.arrayBuffer()))
-        const capeUrl = `${process.env.BASE_URL}/uploads/mangas/${name}/cape.jpg`
+        const capeUrl = `${process.env.BASE_URL}/uploads/mangas/${nameReplace}/cape.jpg`
         return capeUrl
     }
 }

@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import { AppDataSource } from "../data-source";
 import { Manga } from "../entities/Mangas";
+import { ILike } from "typeorm";
 
 export class MangaController {
     async getAllMangas(req: Request, res:Response) {
@@ -18,13 +19,17 @@ export class MangaController {
     }
     async getMangaByName(req: Request, res:Response) {
         const mangaName = req.params.name
+
         if (typeof mangaName !== 'string' || mangaName.trim() === '') {
             return res.status(400).send('Nome do manga inválido.')
         }
-
         const mangaRepository = AppDataSource.getRepository(Manga)
-        const manga = await mangaRepository.findOneBy({name: mangaName})
+        const mangas = await mangaRepository.find({
+            where: {
+                name: ILike(`%${mangaName}%`),
+            },
+        })
 
-        return res.send(manga)
+        return res.send(mangas)
     }
 }
