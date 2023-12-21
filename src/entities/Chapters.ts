@@ -13,6 +13,9 @@ export class Chapter {
     @ManyToOne(() => Manga, (manga) => manga.chapters)
     manga: Manga
 
+    @Column()
+    mangaId: number
+
     @OneToMany(() => Page, (page) => page.chapter) 
     pages: Page[]
 }

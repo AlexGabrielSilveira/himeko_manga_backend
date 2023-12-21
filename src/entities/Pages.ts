@@ -12,6 +12,9 @@ export class Page {
     @Column()
     img_src: string
 
+    @Column()
+    chapterId: number
+
     @ManyToOne(() => Chapter, (Chapter) => Chapter.pages)
     chapter: Chapter
 }

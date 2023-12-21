@@ -88,7 +88,7 @@ export class UserService {
             throw new Error('Cannot assign jwt token if a undefined secret')
         }
         const token = jwt.sign({ email }, process.env.SECRET, {
-            expiresIn: 300,
+            expiresIn: 60 * 24 * 31,
             subject: userId.toString()
         })
         return token

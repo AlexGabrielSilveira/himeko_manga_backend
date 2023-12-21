@@ -11,14 +11,14 @@ export const upload = multer({
             cb(null, fileName);
         },
     }),
-    fileFilter: (_req, file, cb) => {
-        const allowedMimes = ["image/jpeg", "image/png"];
-        if (allowedMimes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error("Invalid file type."));
-        }
-    },
+    // fileFilter: (_req, file, cb) => {
+    //     const allowedMimes = ["image/jpeg", "image/png"];
+    //     if (allowedMimes.includes(file.mimetype)) {
+    //         cb(null, true);
+    //     } else {
+    //         cb(new Error("Invalid file type."));
+    //     }
+    // },
     limits: {
         fileSize: 1 * 1024 * 1024,
     }

@@ -2,6 +2,7 @@ import { Response, Request } from 'express'
 import { z } from  'zod'
 import { ScanlatorService } from '../services/scanlatorService'
 import { MangaService } from '../services/mangaService'
+import { ChapterService } from '../services/chapterService'
 
 export class AdminController {
     async createScanlator(req: Request, res: Response) {
@@ -58,5 +59,16 @@ export class AdminController {
             console.log(err)
         }
         res.status(200).json({ msg: "Manga criado!"})
+    }
+    async createChapter(req: Request, res: Response) {
+        if(req.files == undefined) return res.send('Arquivos não encontrados!')
+        //@ts-ignore
+        let filesPath = req.files?.map((file: any) => {
+            return  `${process.env.BASE_URL}/uploads/${file.filename}`
+        })
+
+        const chapter = new ChapterService()
+        chapter.create(parseFloat(req.params.chapterNumber), req.body.scanlator, filesPath, parseInt(req.params.mangaId))
+
     }
 }

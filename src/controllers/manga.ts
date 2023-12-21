@@ -10,10 +10,11 @@ export class MangaController {
 
         return res.send(manga)
     }
-    async getMangaByMalId(req: Request, res:Response) {
-        const params = parseInt(req.params.mal_id)
+    async getMangaById(req: Request, res:Response) {
+        const params = parseInt(req.params.mangaId)
+
         const mangaRepository = AppDataSource.getRepository(Manga)
-        const manga = await mangaRepository.findOneBy({mal_id: params})
+        const manga = await mangaRepository.findOneBy({id: params})
 
         return res.send(manga)
     }
