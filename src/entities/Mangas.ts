@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Chapter } from "./Chapters"
 import { Scanlator } from "./Scanlators"
 
@@ -34,4 +34,10 @@ export class Manga {
 
     @OneToMany(() => Chapter, (chapter) => chapter.manga)
     chapters: Chapter[]
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 }

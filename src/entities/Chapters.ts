@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Manga } from "./Mangas"
 import { Page } from "./Pages"
 
@@ -8,7 +8,7 @@ export class Chapter {
     id: number
 
     @Column()
-    chap_num: number
+    chapterNumber: number
 
     @ManyToOne(() => Manga, (manga) => manga.chapters)
     manga: Manga
@@ -18,4 +18,10 @@ export class Chapter {
 
     @OneToMany(() => Page, (page) => page.chapter) 
     pages: Page[]
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 }

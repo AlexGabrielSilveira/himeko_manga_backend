@@ -6,6 +6,7 @@ import { upload } from './configs/multer'
 import { MangaController } from './controllers/manga'
 import { Auth as authMiddleware } from './middlewares/auth'
 import { hasRole } from './middlewares/hasRole'
+import { errorHandler } from './middlewares/error_handler'
 const router = Router()
 
 const admin = new AdminController()
@@ -32,6 +33,8 @@ scanlatorRouter.get("/", scanlator.getAllScans)
 mangaRouter.get("/", manga.getAllMangas)
 mangaRouter.get("/:mangaId", manga.getMangaById)
 mangaRouter.get("/search/:name", manga.getMangaByName)
+mangaRouter.get("/:mangaId/chapters", manga.getChaptersByMangaId)
+mangaRouter.get("/:mangaId/chapters/:chapterNumber", manga.getChapterPages)
 
 
 router.use("/admin", authMiddleware, adminRouter)
@@ -39,4 +42,5 @@ router.use("/scanlator", scanlatorRouter)
 router.use("/manga", mangaRouter)
 router.use("/auth", authRouter)
 
+router.use(errorHandler)
 export default router

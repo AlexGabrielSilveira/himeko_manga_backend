@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Chapter } from "./Chapters"
 
 @Entity()
@@ -17,4 +17,10 @@ export class Page {
 
     @ManyToOne(() => Chapter, (Chapter) => Chapter.pages)
     chapter: Chapter
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 }

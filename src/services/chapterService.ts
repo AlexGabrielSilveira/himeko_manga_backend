@@ -6,7 +6,7 @@ export class ChapterService {
     public async create(chapterNumber: number, scanlator: string, pagesSrc: string[], mangaId: number) {
         const chapter = new Chapter()
 
-        chapter.chap_num = chapterNumber
+        chapter.chapterNumber = chapterNumber
         chapter.mangaId = mangaId 
         
         await AppDataSource.manager.transaction(async (transactionalEntityManager) => {

@@ -69,6 +69,6 @@ export class AdminController {
 
         const chapter = new ChapterService()
         chapter.create(parseFloat(req.params.chapterNumber), req.body.scanlator, filesPath, parseInt(req.params.mangaId))
-
+        
     }
 }

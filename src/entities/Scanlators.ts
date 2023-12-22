@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 
 @Entity()
 export class Scanlator {
@@ -13,4 +13,10 @@ export class Scanlator {
 
     @Column({ default: "https://pbs.twimg.com/profile_images/1687471964/neoxlogomini_400x400.png"})
     logo?: string
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 }
