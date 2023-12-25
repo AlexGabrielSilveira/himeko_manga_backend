@@ -16,10 +16,11 @@ export const AppDataSource = new DataSource({
     synchronize: true,
     logging: false,
     entities: [User, Scanlator, Page, Manga, Chapter],
+    charset: "utf8mb4",
 })
 
 AppDataSource.initialize()
     .then(() => {
-        console.log("banco de dados on e roteando papai!")
+        console.log("banco de dados on e roteando papai!");
     })
     .catch((error) => console.log(error))

@@ -1,6 +1,6 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Chapter } from "./Chapters"
-import { Scanlator } from "./Scanlators"
+import { User } from "./Users"
 
 @Entity()
 export class Manga {  
@@ -28,12 +28,14 @@ export class Manga {
     @Column()
     mal_id: number
 
-    @OneToOne(() => Manga)
-    @JoinColumn()
-    scanlator: Scanlator
-
     @OneToMany(() => Chapter, (chapter) => chapter.manga)
     chapters: Chapter[]
+
+    @ManyToOne(() => User)
+    createdBy: User
+
+    @Column()
+    createdById: number
 
     @CreateDateColumn()
     created_at: Date;

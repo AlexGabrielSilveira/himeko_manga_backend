@@ -3,11 +3,12 @@ import { Chapter } from "../entities/Chapters"
 import { Page } from "../entities/Pages"
 
 export class ChapterService {
-    public async create(chapterNumber: number, scanlator: string, pagesSrc: string[], mangaId: number) {
+    public async create(chapterNumber: number, scanlatorId: number, pagesSrc: string[], mangaId: number) {
         const chapter = new Chapter()
 
         chapter.chapterNumber = chapterNumber
-        chapter.mangaId = mangaId 
+        chapter.scanlatorId = scanlatorId
+        chapter.mangaId = mangaId
         
         await AppDataSource.manager.transaction(async (transactionalEntityManager) => {
             let savedChapter = await transactionalEntityManager.save(chapter)

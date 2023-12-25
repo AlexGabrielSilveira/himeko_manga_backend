@@ -3,6 +3,7 @@ import { z } from  'zod'
 import { ScanlatorService } from '../services/scanlatorService'
 import { MangaService } from '../services/mangaService'
 import { ChapterService } from '../services/chapterService'
+import { User } from '../entities/Users'
 
 export class AdminController {
     async createScanlator(req: Request, res: Response) {
@@ -26,9 +27,10 @@ export class AdminController {
         }
     
         try {
-            await scanlatorService.create(name, url, logoUrl)
+            await scanlatorService.create({name, url, logoUrl, ownerId: req.user?.id as number})
         } catch (error) {
             console.log(error)
+            return res.status(400).json({msg: "Erro ao criar scanlator"})
         }
         res.status(200).json({ msg: "scanlator criada!"})
     }
@@ -50,13 +52,25 @@ export class AdminController {
             const formatted = mangaParsed.error.format()
             return res.status(400).json({formatted})
         }
+
+        const user = req.user as User
         const mangaService = new MangaService()
 
         try {
             const capeUrl = await mangaService.saveCapeImage(img, name)
-            await mangaService.create(name, note, tags, description, capeUrl, mal_id, authors)
-        }catch(err) {
+            await mangaService.create({
+                name: mangaParsed.data.name,
+                note: mangaParsed.data.note,
+                tags: mangaParsed.data.tags,
+                description: mangaParsed.data.description,
+                capeUrl,
+                mal_id: mangaParsed.data.mal_id,
+                authors: mangaParsed.data.authors,
+                createdByUserId: user.id
+            })
+        } catch(err) {
             console.log(err)
+            return res.status(400).json({msg: "Erro ao criar manga"})
         }
         res.status(200).json({ msg: "Manga criado!"})
     }
@@ -67,8 +81,10 @@ export class AdminController {
             return  `${process.env.BASE_URL}/uploads/${file.filename}`
         })
 
+        const user = req.user as User
+
         const chapter = new ChapterService()
-        chapter.create(parseFloat(req.params.chapterNumber), req.body.scanlator, filesPath, parseInt(req.params.mangaId))
+        chapter.create(parseFloat(req.params.chapterNumber), user.scanlatorId as number, filesPath, parseInt(req.params.mangaId))
         
     }
 }

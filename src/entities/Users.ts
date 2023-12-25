@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { Scanlator } from './Scanlators';
 
 @Entity()
 export class User {
@@ -22,10 +23,15 @@ export class User {
     @Column({ default: "user"})
     role: string
 
+    @OneToOne(() => Scanlator, (scanlator) => scanlator.owner)
+    scanlator?: Scanlator
+
+    @Column({ nullable: true })
+    scanlatorId?: number
+
     @CreateDateColumn()
     created_at: Date;
 
     @UpdateDateColumn()
     updated_at: Date;
-
 }

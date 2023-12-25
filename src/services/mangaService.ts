@@ -4,18 +4,39 @@ import fsPromises from 'fs/promises'
 import fs from 'fs'
 import path from "node:path"
 
+interface CreateParams {
+    name: string
+    authors: string
+    note: string
+    tags: string
+    description: string
+    capeUrl: string
+    mal_id: number
+    createdByUserId: number
+}
+
 export class MangaService {
-    public async create(name: string, note: string, tags: string, description: string, img: string, mal_id: number, author: string) {
+    public async create({
+        name, 
+        note, 
+        tags, 
+        description, 
+        capeUrl, 
+        mal_id, 
+        authors,
+        createdByUserId,
+    }: CreateParams) {
         const mangaRespository = AppDataSource.getRepository(Manga)
 
         const manga = new Manga()
         manga.name = name
         manga.tags = tags
-        manga.authors = author
+        manga.authors = authors
         manga.note = note
         manga.description = description
-        manga.cape_url = img,
+        manga.cape_url = capeUrl,
         manga.mal_id = mal_id
+        manga.createdById = createdByUserId
 
         await mangaRespository.save(manga)
     }
